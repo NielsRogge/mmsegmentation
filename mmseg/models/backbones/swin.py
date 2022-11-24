@@ -753,7 +753,7 @@ class SwinTransformer(BaseModule):
 
             return image_transforms(image).unsqueeze(0)
 
-        x = use_dummy_image()
+        x = use_dummy_image().to("cuda")
 
         x, hw_shape = self.patch_embed(x)
 
