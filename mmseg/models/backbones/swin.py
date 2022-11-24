@@ -770,7 +770,9 @@ class SwinTransformer(BaseModule):
         outs = []
         for i, stage in enumerate(self.stages):
             x, hw_shape, out, out_hw_shape = stage(x, hw_shape)
+            print(f"------STAGE {i} ---------"
             print("Hidden states of stage", i, ":", x.shape)
+            print("First values of stage", i, ":", x[0,:3,:3])
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
                 out = norm_layer(out)
