@@ -611,6 +611,7 @@ class SwinTransformer(nn.Module):
         url = "https://huggingface.co/datasets/hf-internal-testing/fixtures_ade20k/resolve/main/ADE_val_00000001.jpg"
         image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
         x = image_transforms(image).unsqueeze(0)
+        x = x.to("cuda")
         # end of hack
 
         x = self.patch_embed(x)
