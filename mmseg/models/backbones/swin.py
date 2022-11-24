@@ -769,13 +769,11 @@ class SwinTransformer(BaseModule):
 
         outs = []
         for i, stage in enumerate(self.stages):
-            if i == 0:
-                print(f"Shape of hidden states before stage {i}:", x.shape)
-                print(f"Hidden states before stage {i}:", x[0,:3,:3])
+            # print(f"Shape of hidden states before stage {i}:", x.shape)
+            # print(f"Hidden states before stage {i}:", x[0,:3,:3])
             x, hw_shape, out, out_hw_shape = stage(x, hw_shape)
-            if i == 0:
-                print(f"Shape of hidden states after stage {i}:", out.shape)
-                print(f"Hidden states after stage {i}:", out[0,:3,:3])
+            print(f"Shape of hidden states after stage {i}:", out.shape)
+            print(f"Hidden states after stage {i}:", out[0,:3,:3])
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
                 out = norm_layer(out)
