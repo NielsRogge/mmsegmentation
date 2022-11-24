@@ -736,6 +736,25 @@ class SwinTransformer(BaseModule):
             load_state_dict(self, state_dict, strict=False, logger=logger)
 
     def forward(self, x):
+        # hack: simply use ADE20k image
+        def use_dummy_image():
+            from PIL import Image
+            import requests
+            import torchvision.transforms as T
+
+            url = "https://huggingface.co/datasets/hf-internal-testing/fixtures_ade20k/resolve/main/ADE_val_00000001.jpg"
+            image = Image.open(requests.get(url, stream=True).raw)
+
+            image_transforms = T.Compose([
+                T.Resize((512, 512)),
+                T.ToTensor(),
+                T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            ])
+
+            return image_transforms(image).unsqueeze(0)
+
+        x = use_dummy_image()
+
         x, hw_shape = self.patch_embed(x)
 
         if self.use_abs_pos_embed:
@@ -745,6 +764,7 @@ class SwinTransformer(BaseModule):
         outs = []
         for i, stage in enumerate(self.stages):
             x, hw_shape, out, out_hw_shape = stage(x, hw_shape)
+            print("Hidden states of stage", i, ":", x.shape)
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
                 out = norm_layer(out)
