@@ -761,6 +761,9 @@ class SwinTransformer(BaseModule):
             x = x + self.absolute_pos_embed
         x = self.drop_after_pos(x)
 
+        print("Shape of embeddings before encoder:", x.shape)
+        print("First values of embeddings:", x[0,:3,:3])
+
         outs = []
         for i, stage in enumerate(self.stages):
             x, hw_shape, out, out_hw_shape = stage(x, hw_shape)
