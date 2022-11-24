@@ -282,7 +282,7 @@ class PatchMerging(BaseModule):
 
         self.reduction = nn.Linear(sample_dim, out_channels, bias=bias)
 
-    def forward(self, x, input_size):
+    def forward(self, x, input_size, print_values=False):
         """
         Args:
             x (Tensor): Has shape (B, H*W, C_in).
@@ -310,6 +310,8 @@ class PatchMerging(BaseModule):
         # but need to modify pretrained model for compatibility
 
         if self.adap_padding:
+            if print_values:
+                print("we are applying adaptive padding")
             x = self.adap_padding(x)
             H, W = x.shape[-2:]
 
@@ -325,6 +327,11 @@ class PatchMerging(BaseModule):
 
         output_size = (out_h, out_w)
         x = x.transpose(1, 2)  # B, H/2*W/2, 4*C
+
+        if print_values:
+            print("Shape of x before norm:", x.shape)
+            print("First values of x before norm:", x[0,:3,:3])
+
         x = self.norm(x) if self.norm else x
         x = self.reduction(x)
         return x, output_size
