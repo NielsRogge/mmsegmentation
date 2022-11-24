@@ -599,6 +599,20 @@ class SwinTransformer(nn.Module):
 
     def forward(self, x):
         """Forward function."""
+        # hack: use ADE20k image
+        import requests
+        from PIL import Image
+        from torchvision.transforms import Compose, Resize, ToTensor, Normalize
+
+        image_transforms = Compose(
+            [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+        )
+
+        url = "https://huggingface.co/datasets/hf-internal-testing/fixtures_ade20k/resolve/main/ADE_val_00000001.jpg"
+        image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+        x = image_transforms(image).unsqueeze(0)
+        # end of hack
+
         x = self.patch_embed(x)
 
         Wh, Ww = x.size(2), x.size(3)
@@ -617,6 +631,7 @@ class SwinTransformer(nn.Module):
 
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
+                print(f"Shape of hidden state at stage {i}:", x_out.shape)
                 x_out = norm_layer(x_out)
 
                 out = x_out.view(-1, H, W, self.num_features[i]).permute(0, 3, 1, 2).contiguous()
