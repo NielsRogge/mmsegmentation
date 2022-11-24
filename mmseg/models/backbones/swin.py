@@ -755,6 +755,9 @@ class SwinTransformer(BaseModule):
 
         x = use_dummy_image().to("cuda")
 
+        print("Sum of pixel values:", x.sum().item())
+        print("Mean of pixel values:", x.mean().item())
+
         x, hw_shape = self.patch_embed(x)
 
         if self.use_abs_pos_embed:
