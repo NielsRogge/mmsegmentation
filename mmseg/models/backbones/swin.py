@@ -459,6 +459,8 @@ class SwinBlockSequence(BaseModule):
 
         if self.downsample:
             x_down, down_hw_shape = self.downsample(x, hw_shape)
+            if print_values:
+                print(f"Hidden states after downsample:", x_down[0,:3,:3])
             return x_down, down_hw_shape, x, hw_shape
         else:
             return x, hw_shape, x, hw_shape
