@@ -98,7 +98,7 @@ def inference_segmentor(model, img):
     return result
 
 
-def show_result_pyplot(model, img, result, palette=None, fig_size=(15, 10)):
+def show_result_pyplot(model, img, result, palette=None, fig_size=(15, 10), out_file=None):
     """Visualize the segmentation results on the image.
 
     Args:
@@ -116,3 +116,5 @@ def show_result_pyplot(model, img, result, palette=None, fig_size=(15, 10)):
     plt.figure(figsize=fig_size)
     plt.imshow(mmcv.bgr2rgb(img))
     plt.show()
+    if out_file is not None:
+        mmcv.imwrite(img, out_file)

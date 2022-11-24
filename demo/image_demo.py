@@ -9,6 +9,7 @@ def main():
     parser.add_argument('img', help='Image file')
     parser.add_argument('config', help='Config file')
     parser.add_argument('checkpoint', help='Checkpoint file')
+    parser.add_argument('--out-file', default=None, help='Path to output file')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
@@ -22,7 +23,7 @@ def main():
     # test a single image
     result = inference_segmentor(model, args.img)
     # show the results
-    show_result_pyplot(model, args.img, result, get_palette(args.palette))
+    show_result_pyplot(model, args.img, result, get_palette(args.palette), out_file=args.out_file))
 
 
 if __name__ == '__main__':
