@@ -451,9 +451,11 @@ class SwinBlockSequence(BaseModule):
 
         self.downsample = downsample
 
-    def forward(self, x, hw_shape):
-        for block in self.blocks:
+    def forward(self, x, hw_shape, print_values):
+        for idx, block in enumerate(self.blocks):
             x = block(x, hw_shape)
+            if print_values:
+                print(f"Hidden states after block {idx}:", x[0,:3,:3]
 
         if self.downsample:
             x_down, down_hw_shape = self.downsample(x, hw_shape)
@@ -771,7 +773,7 @@ class SwinTransformer(BaseModule):
         for i, stage in enumerate(self.stages):
             # print(f"Shape of hidden states before stage {i}:", x.shape)
             # print(f"Hidden states before stage {i}:", x[0,:3,:3])
-            x, hw_shape, out, out_hw_shape = stage(x, hw_shape)
+            x, hw_shape, out, out_hw_shape = stage(x, hw_shape, print_values=i==0)
             print(f"Shape of hidden states before downsampling after stage {i}:", out.shape)
             print(f"Hidden states before downsampling after stage {i}:", out[0,:3,:3])
             print(f"Hidden states after stage {i}:", x[0, :3, :3])
