@@ -636,6 +636,9 @@ class SwinTransformer(nn.Module):
                 x_out = norm_layer(x_out)
 
                 out = x_out.view(-1, H, W, self.num_features[i]).permute(0, 3, 1, 2).contiguous()
+                
+                print(f"First values of hidden state at stage {i}", out[0,0,:3,:3])
+                
                 outs.append(out)
 
         return tuple(outs)
