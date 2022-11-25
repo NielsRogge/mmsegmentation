@@ -359,7 +359,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, print_values=False):
         """ Forward function.
 
         Args:
@@ -388,12 +388,14 @@ class BasicLayer(nn.Module):
         attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
-        for blk in self.blocks:
+        for idx, blk in enumerate(self.blocks):
             blk.H, blk.W = H, W
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
                 x = blk(x, attn_mask)
+                if print_values:
+                    print(f"Hidden states after block {idx}:", x[0,:3,:3])
         if self.downsample is not None:
             x_down = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
@@ -628,7 +630,7 @@ class SwinTransformer(nn.Module):
         outs = []
         for i in range(self.num_layers):
             layer = self.layers[i]
-            x_out, H, W, x, Wh, Ww = layer(x, Wh, Ww)
+            x_out, H, W, x, Wh, Ww = layer(x, Wh, Ww, print_values=i==3)
 
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
