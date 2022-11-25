@@ -195,7 +195,7 @@ class SwinTransformerBlock(nn.Module):
         self.H = None
         self.W = None
 
-    def forward(self, x, mask_matrix):
+    def forward(self, x, mask_matrix, print_values=False):
         """ Forward function.
 
         Args:
@@ -209,6 +209,10 @@ class SwinTransformerBlock(nn.Module):
 
         shortcut = x
         x = self.norm1(x)
+
+        if print_values:
+            print("Hidden states after first layernorm:", x[0,:3,:3])
+
         x = x.view(B, H, W, C)
 
         # pad feature maps to multiples of window size
@@ -393,7 +397,7 @@ class BasicLayer(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
-                x = blk(x, attn_mask)
+                x = blk(x, attn_mask, print_values=print_values)
                 if print_values:
                     print(f"Hidden states after block {idx}:", x[0,:3,:3])
         if self.downsample is not None:
