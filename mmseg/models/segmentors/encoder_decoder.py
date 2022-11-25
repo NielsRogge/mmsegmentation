@@ -86,6 +86,10 @@ class EncoderDecoder(BaseSegmentor):
         map of the same size as input."""
         x = self.extract_feat(img)
         out = self._decode_head_forward_test(x, img_metas)
+
+        print("Shape of logits:", out.shape)
+        print("First values of logits:", out[0, 0, :3, :3])
+        
         out = resize(
             input=out,
             size=img.shape[2:],
@@ -215,9 +219,6 @@ class EncoderDecoder(BaseSegmentor):
         """Inference with full image."""
 
         seg_logit = self.encode_decode(img, img_meta)
-
-        print("Shape of logits:", seg_logit.shape)
-        print("First values of logits:", seg_logit[0, 0, :3, :3])
 
         if rescale:
             seg_logit = resize(
