@@ -256,6 +256,9 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
+        if print_values:
+            print("Final Hidden states of block:", x[0,:3,:3])
+
         return x
 
 
