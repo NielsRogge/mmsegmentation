@@ -215,6 +215,10 @@ class EncoderDecoder(BaseSegmentor):
         """Inference with full image."""
 
         seg_logit = self.encode_decode(img, img_meta)
+
+        print("Shape of logits:", seg_logit.shape)
+        print("First values of logits:", seg_logit[0, 0, :3, :3])
+
         if rescale:
             seg_logit = resize(
                 seg_logit,
@@ -263,9 +267,6 @@ class EncoderDecoder(BaseSegmentor):
     def simple_test(self, img, img_meta, rescale=True):
         """Simple test with single image."""
         seg_logit = self.inference(img, img_meta, rescale)
-
-        print("Shape of logits:", seg_logit.shape)
-        print("First values of logits:", seg_logit[0, 0, :3, :3])
 
         seg_pred = seg_logit.argmax(dim=1)
         if torch.onnx.is_in_onnx_export():
