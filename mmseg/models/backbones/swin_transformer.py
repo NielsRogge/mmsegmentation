@@ -632,12 +632,12 @@ class SwinTransformer(nn.Module):
 
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
-                print(f"Shape of hidden state at stage {i}:", x_out.shape)
+                print(f"Hidden states at stage {i} before norm:", x_out[0,:3,:3])
                 x_out = norm_layer(x_out)
 
                 out = x_out.view(-1, H, W, self.num_features[i]).permute(0, 3, 1, 2).contiguous()
                 
-                print(f"First values of hidden state at stage {i}", out[0,0,:3,:3])
+                print(f"Hidden states at stage {i} after norm:", out[0,:0,:3,:3])
                 
                 outs.append(out)
 
