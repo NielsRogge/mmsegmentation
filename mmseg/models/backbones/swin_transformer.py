@@ -237,6 +237,9 @@ class SwinTransformerBlock(nn.Module):
         # W-MSA/SW-MSA
         attn_windows = self.attn(x_windows, mask=attn_mask)  # nW*B, window_size*window_size, C
 
+        if print_values:
+            print("Hidden states after attention:", attn_windows[0,0,:3,:3])
+
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
         shifted_x = window_reverse(attn_windows, self.window_size, Hp, Wp)  # B H' W' C
