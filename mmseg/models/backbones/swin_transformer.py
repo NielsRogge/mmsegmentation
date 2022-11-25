@@ -228,6 +228,9 @@ class SwinTransformerBlock(nn.Module):
         if print_values:
             print("Hidden states after padding:", x[0,0,:3,:3])
 
+        if print_values:
+            print("Shift size:", self.shift_size)
+
         # cyclic shift
         if self.shift_size > 0:
             shifted_x = torch.roll(x, shifts=(-self.shift_size, -self.shift_size), dims=(1, 2))
