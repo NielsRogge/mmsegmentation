@@ -87,14 +87,15 @@ class EncoderDecoder(BaseSegmentor):
         x = self.extract_feat(pixel_values)
         out = self._decode_head_forward_test(x, img_metas)
 
-        print("Shape of logits:", out.shape)
-        print("First values of logits:", out[0,0,:3,:3])
-
         out = resize(
             input=out,
             size=img.shape[2:],
             mode='bilinear',
             align_corners=self.align_corners)
+
+        print("Shape of logits:", out.shape)
+        print("First values of logits:", out[0,0,:3,:3])
+
         return out
 
     def _decode_head_forward_train(self, x, img_metas, gt_semantic_seg):
