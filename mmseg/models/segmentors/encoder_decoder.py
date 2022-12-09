@@ -82,7 +82,7 @@ class EncoderDecoder(BaseSegmentor):
 
         url = "https://huggingface.co/datasets/hf-internal-testing/fixtures_ade20k/resolve/main/ADE_val_00000001.jpg"
         image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
-        pixel_values = image_transforms(image).unsqueeze(0)
+        pixel_values = image_transforms(image).unsqueeze(0).to("cuda")
 
         x = self.extract_feat(pixel_values)
         out = self._decode_head_forward_test(x, img_metas)
