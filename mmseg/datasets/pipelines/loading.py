@@ -64,6 +64,9 @@ class LoadImageFromFile(object):
         if self.to_float32:
             img = img.astype(np.float32)
 
+        print("Min value of img: ", np.min(img))
+        print("Max value of img: ", np.max(img))
+
         results['filename'] = filename
         results['ori_filename'] = results['img_info']['filename']
         results['img'] = img
