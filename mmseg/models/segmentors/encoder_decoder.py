@@ -71,7 +71,20 @@ class EncoderDecoder(BaseSegmentor):
     def encode_decode(self, img, img_metas):
         """Encode images with backbone and decode into a semantic segmentation
         map of the same size as input."""
-        x = self.extract_feat(img)
+        # hack: fix the image
+        from torchvision.transforms import Compose, Normalize, Resize, ToTensor
+        import requests
+        from PIL import Image
+
+        image_transforms = Compose(
+            [Resize((512, 512)), ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+        )
+
+        url = "https://huggingface.co/datasets/hf-internal-testing/fixtures_ade20k/resolve/main/ADE_val_00000001.jpg"
+        image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+        pixel_values = image_transforms(image).unsqueeze(0)
+
+        x = self.extract_feat(pixel_values)
         out = self._decode_head_forward_test(x, img_metas)
 
         print("Shape of logits:", out.shape)
