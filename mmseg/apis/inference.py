@@ -95,7 +95,8 @@ def inference_segmentor(model, imgs):
         data.append(img_data)
     data = collate(data, samples_per_gpu=len(imgs))
 
-    print(type(data["img"]))
+    for i in data["img"]:
+        print(i.shape)
 
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
