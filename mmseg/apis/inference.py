@@ -84,6 +84,7 @@ def inference_segmentor(model, imgs):
     test_pipeline = [LoadImage()] + cfg.data.test.pipeline[1:]
     test_pipeline = Compose(test_pipeline)
 
+    print("Test configuration:", cfg.data.test)
     print("Test pipeline: ", test_pipeline)
 
     # prepare data
