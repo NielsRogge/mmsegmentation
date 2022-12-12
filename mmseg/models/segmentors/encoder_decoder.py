@@ -179,6 +179,7 @@ class EncoderDecoder(BaseSegmentor):
         If h_crop > h_img or w_crop > w_img, the small patch will be used to
         decode without padding.
         """
+        print("We are performing slided inference")
 
         h_stride, w_stride = self.test_cfg.stride
         h_crop, w_crop = self.test_cfg.crop_size
@@ -286,6 +287,19 @@ class EncoderDecoder(BaseSegmentor):
 
     def simple_test(self, img, img_meta, rescale=True):
         """Simple test with single image."""
+        from huggingface_hub import HfApi
+        
+        api = HfApi()
+
+        torch.save(img, "pixel_values.pt")
+
+        api.upload_file(
+            path_or_fileobj="pixel_values.pt",
+            path_in_repo="pixel_values.pt",
+            repo_id="nielsr/mmsegmentation-image",
+            repo_type="dataset",
+        )
+
         seg_logit = self.inference(img, img_meta, rescale)
         if self.out_channels == 1:
             seg_pred = (seg_logit >
